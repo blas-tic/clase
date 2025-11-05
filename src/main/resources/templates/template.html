@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${#strings.isEmpty(title) ? 'Gestor de Alumnos' : title + ' - Gestor de Alumnos'}">Gestor de Alumnos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Barra de navegación Tailwind -->
+        <nav class="bg-blue-600 shadow-lg">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center space-x-6">
+                        <a href="/" class="text-white font-bold text-xl">Academia</a>
+                        <a th:href="@{/alumnos}" class="text-white hover:text-blue-200">Alumnos</a>
+                        <a th:href="@{/asignaturas}" class="text-white hover:text-blue-200">Asignaturas</a>
+                        <a th:href="@{/clases}" class="text-white hover:text-blue-200">Clases</a>
+                        <a th:href="@{/aulas}" class="text-white hover:text-blue-200">Aulas</a>
+                    </div>
+
+                    <!-- Usuario logado y logout -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Información del usuario -->
+                        <div class="text-right">
+                            <span class="text-white text-sm block" sec:authentication="name"></span>
+                            <span class="text-blue-200 text-xs" sec:authorize="hasRole('ADMIN')">Administrador</span>
+                            <span class="text-blue-200 text-xs" sec:authorize="hasRole('PROFESOR')">Profesor</span>
+                            <span class="text-blue-200 text-xs" sec:authorize="hasRole('ALUMNO')">Alumno</span>
+                        </div>
+
+                        <!-- Botón de logout con icono -->
+                        <form th:action="@{/logout}" method="post" class="inline">
+                            <button type="submit"
+                                class="text-white hover:text-blue-200 p-1 rounded transition-colors duration-200"
+                                title="Cerrar sesión">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-8">
+            <div layout:fragment="content">
+                <!-- El contenido de las páginas se insertará aquí -->
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-4 mt-8">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2024 Gestor de Alumnos - Spring Boot + Tailwind CSS</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+</body>
+</html>
