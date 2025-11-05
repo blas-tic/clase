@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title th:text="${clase.id != null} ? 'Editar Clase' : 'Nueva Clase'"></title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6"
+                th:text="${clase.id != null} ? 'Editar Clase' : 'Nueva Clase'"></h2>
+
+            <form th:action="@{/clases/guardar}" th:object="${clase}" method="post"
+                class="bg-white shadow-lg rounded-lg p-6 space-y-6">
+
+                <input type="hidden" th:field="*{id}" />
+
+                <!-- Selector de Asignatura para Clase (solo una) -->
+                <div class="mb-6">
+                    <label for="asignatura" class="block text-sm font-medium text-gray-700 mb-2">Asignatura</label>
+                    <select id="asignatura" name="asignatura" th:field="*{asignatura}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-800">
+                        <option value="" disabled selected>Seleccione una asignatura</option>
+                        <th:block th:each="asignatura : ${asignaturas}">
+                            <option th:value="${asignatura.id}" th:text="${asignatura.nombre}"
+                                th:selected="${clase.asignatura != null and clase.asignatura.id == asignatura.id}">
+                            </option>
+                        </th:block>
+                    </select>
+                </div>
+
+                <!-- Selector de Día de la Semana usando enum -->
+                <div class="mb-6">
+                    <label for="diaSemana" class="block text-sm font-medium text-gray-700 mb-2">Día de la semana</label>
+                    <select id="diaSemana" name="diaSemana" th:field="*{diaSemana}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-800">
+                        <option value="" disabled selected>Seleccione un día</option>
+                        <th:block th:each="dia : ${diasSemana}">
+                            <option th:value="${dia}" th:text="${dia.nombre}" th:selected="${clase.diaSemana == dia}">
+                            </option>
+                        </th:block>
+                    </select>
+                </div>
+
+                <!-- Selector horaDesde -->
+                <div class="mb-6">
+                    <label for="horaDesde" class="block text-sm font-medium text-gray-700 mb-2">Hora desde</label>
+                    <select id="horaDesde" name="horaDesde" th:field="*{horaDesde}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-800">
+                        <option value="" disabled selected>Seleccione hora de inicio</option>
+                        <option th:value="'08:00'" th:selected="${clase.horaDesde == '08:00'}">08:00</option>
+                        <option th:value="'08:30'" th:selected="${clase.horaDesde == '08:30'}">08:30</option>
+                        <option th:value="'09:00'" th:selected="${clase.horaDesde == '09:00'}">09:00</option>
+                        <option th:value="'09:30'" th:selected="${clase.horaDesde == '09:30'}">09:30</option>
+                        <option th:value="'10:00'" th:selected="${clase.horaDesde == '10:00'}">10:00</option>
+                        <option th:value="'10:30'" th:selected="${clase.horaDesde == '10:30'}">10:30</option>
+                        <option th:value="'11:00'" th:selected="${clase.horaDesde == '11:00'}">11:00</option>
+                        <option th:value="'11:30'" th:selected="${clase.horaDesde == '11:30'}">11:30</option>
+                        <option th:value="'12:00'" th:selected="${clase.horaDesde == '12:00'}">12:00</option>
+                        <option th:value="'12:30'" th:selected="${clase.horaDesde == '12:30'}">12:30</option>
+                        <option th:value="'13:00'" th:selected="${clase.horaDesde == '13:00'}">13:00</option>
+                        <option th:value="'13:30'" th:selected="${clase.horaDesde == '13:30'}">13:30</option>
+                        <option th:value="'14:00'" th:selected="${clase.horaDesde == '14:00'}">14:00</option>
+                        <option th:value="'14:30'" th:selected="${clase.horaDesde == '14:30'}">14:30</option>
+                        <option th:value="'15:00'" th:selected="${clase.horaDesde == '15:00'}">15:00</option>
+                        <option th:value="'15:30'" th:selected="${clase.horaDesde == '15:30'}">15:30</option>
+                        <option th:value="'16:00'" th:selected="${clase.horaDesde == '16:00'}">16:00</option>
+                        <option th:value="'16:30'" th:selected="${clase.horaDesde == '16:30'}">16:30</option>
+                        <option th:value="'17:00'" th:selected="${clase.horaDesde == '17:00'}">17:00</option>
+                        <option th:value="'17:30'" th:selected="${clase.horaDesde == '17:30'}">17:30</option>
+                        <option th:value="'18:00'" th:selected="${clase.horaDesde == '18:00'}">18:00</option>
+                    </select>
+                </div>
+
+                <!-- Selector horaHasta -->
+                <div class="mb-6">
+                    <label for="horaHasta" class="block text-sm font-medium text-gray-700 mb-2">Hora hasta</label>
+                    <select id="horaHasta" name="horaHasta" th:field="*{horaHasta}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-800">
+                        <option value="" disabled selected>Seleccione hora de fin</option>
+                        <option th:value="'08:00'" th:selected="${clase.horaHasta == '08:00'}">08:00</option>
+                        <option th:value="'08:30'" th:selected="${clase.horaHasta == '08:30'}">08:30</option>
+                        <option th:value="'09:00'" th:selected="${clase.horaHasta == '09:00'}">09:00</option>
+                        <option th:value="'09:30'" th:selected="${clase.horaHasta == '09:30'}">09:30</option>
+                        <option th:value="'10:00'" th:selected="${clase.horaHasta == '10:00'}">10:00</option>
+                        <option th:value="'10:30'" th:selected="${clase.horaHasta == '10:30'}">10:30</option>
+                        <option th:value="'11:00'" th:selected="${clase.horaHasta == '11:00'}">11:00</option>
+                        <option th:value="'11:30'" th:selected="${clase.horaHasta == '11:30'}">11:30</option>
+                        <option th:value="'12:00'" th:selected="${clase.horaHasta == '12:00'}">12:00</option>
+                        <option th:value="'12:30'" th:selected="${clase.horaHasta == '12:30'}">12:30</option>
+                        <option th:value="'13:00'" th:selected="${clase.horaHasta == '13:00'}">13:00</option>
+                        <option th:value="'13:30'" th:selected="${clase.horaHasta == '13:30'}">13:30</option>
+                        <option th:value="'14:00'" th:selected="${clase.horaHasta == '14:00'}">14:00</option>
+                        <option th:value="'14:30'" th:selected="${clase.horaHasta == '14:30'}">14:30</option>
+                        <option th:value="'15:00'" th:selected="${clase.horaHasta == '15:00'}">15:00</option>
+                        <option th:value="'15:30'" th:selected="${clase.horaHasta == '15:30'}">15:30</option>
+                        <option th:value="'16:00'" th:selected="${clase.horaHasta == '16:00'}">16:00</option>
+                        <option th:value="'16:30'" th:selected="${clase.horaHasta == '16:30'}">16:30</option>
+                        <option th:value="'17:00'" th:selected="${clase.horaHasta == '17:00'}">17:00</option>
+                        <option th:value="'17:30'" th:selected="${clase.horaHasta == '17:30'}">17:30</option>
+                        <option th:value="'18:00'" th:selected="${clase.horaHasta == '18:00'}">18:00</option>
+                    </select>
+                </div>
+
+                <!-- Selector de Aula para Clase (solo una) -->
+                <div class="mb-6">
+                    <label for="aula" class="block text-sm font-medium text-gray-700 mb-2">Aula</label>
+                    <select id="aula" name="aula" th:field="*{aula}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-800">
+                        <option value="" disabled selected>Seleccione un aula</option>
+                        <th:block th:each="aula : ${aulas}">
+                            <option th:value="${aula.id}" th:text="${aula.nombre}"
+                                th:selected="${clase.aula != null and clase.aula.id == aula.id}">
+                            </option>
+                        </th:block>
+                    </select>
+                </div>
+
+                <!-- Botones -->
+                <div class="flex justify-end space-x-4 pt-4">
+                    <a th:href="@{/clases}"
+                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-200">
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

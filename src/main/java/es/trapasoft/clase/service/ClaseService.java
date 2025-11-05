@@ -20,14 +20,23 @@ public class ClaseService {
     }
 
     public Optional<Clase> getById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
         return repo.findById(id);
     }
 
     public void save(Clase clase) {
+        if (clase == null) {
+            throw new IllegalArgumentException("La clase no puede ser nula");
+        }
         repo.save(clase);
     }
 
     public void deleteById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
         repo.deleteById(id);
     }
 

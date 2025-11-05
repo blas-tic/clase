@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import es.trapasoft.clase.model.Alumno;
+import es.trapasoft.clase.repository.AsignaturaRepository;
 import es.trapasoft.clase.service.AlumnoService;
 import jakarta.validation.Valid;
 
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-
 @Controller
 @RequestMapping("/alumnos")
 public class AlumnoController {
@@ -27,21 +27,26 @@ public class AlumnoController {
     @Autowired
     private AlumnoService alumnoService;
 
+    @Autowired
+    private AsignaturaRepository asigRepo;
+
     @GetMapping
-    public String listarAlumnos(Model model) {
-        List<Alumno> alumnos = alumnoService.findAll();
-        model.addAttribute("alumnos", alumnos); 
+    public String listarAlumnos(@RequestParam(required = false) String search, Model model) {
+        List<Alumno> alumnos = (search == null || search.isBlank())
+                ? alumnoService.findAll()
+                : alumnoService.findByNombre(search);
+        model.addAttribute("alumnos", alumnos);
         return "alumnos/lista";
     }
 
     @PostMapping("/guardar")
-    public String guardarAlumno(@Valid@ModelAttribute Alumno alumno, Model model, BindingResult result) {
+    public String guardarAlumno(@Valid @ModelAttribute Alumno alumno, Model model, BindingResult result) {
         if (result.hasErrors()) {
             return "alumnos/formulario";
         }
         // Validar email único
         if (alumno.getId() == null || !alumnoService.findById(alumno.getId())
-            .map(a -> a.getEmail().equals(alumno.getEmail())).orElse(false)) {
+                .map(a -> a.getEmail().equals(alumno.getEmail())).orElse(false)) {
             if (alumnoService.existsByEmail(alumno.getEmail())) {
                 result.rejectValue("email", "error.alumno", "El email ya está en uso");
                 return "alumnos/formulario";
@@ -56,6 +61,7 @@ public class AlumnoController {
         Optional<Alumno> alumno = alumnoService.findById(id);
         if (alumno.isPresent()) {
             model.addAttribute("alumno", alumno.get());
+            model.addAttribute("asignaturas", asigRepo.findAll());
             return "alumnos/formulario";
         }
         return "redirect:/alumnos";
@@ -64,6 +70,7 @@ public class AlumnoController {
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(Model model) {
         model.addAttribute("alumno", new Alumno());
+        model.addAttribute("asignaturas", asigRepo.findAll());
         return "alumnos/formulario";
     }
 
@@ -71,5 +78,5 @@ public class AlumnoController {
     public String eliminarAlumno(@PathVariable Long id) {
         alumnoService.deleteById(id);
         return "redirect:/alumnos";
-    }   
+    }
 }

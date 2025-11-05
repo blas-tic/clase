@@ -20,20 +20,32 @@ public class AlumnoService {
     }
 
     public Optional<Alumno> findById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
         return alumnoRepository.findById(id);
-    }   
+    }
+
     public Alumno save(Alumno alumno) {
+        if (alumno == null) {
+            throw new IllegalArgumentException("El alumno no puede ser nulo");
+        }
         return alumnoRepository.save(alumno);
     }
+
     public void deleteById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID no puede ser nulo");
+        }
         alumnoRepository.deleteById(id);
     }
 
     public List<Alumno> findByNombre(String nombre) {
         return alumnoRepository.findByNombreContainingIgnoreCase(nombre);
     }
+
     public boolean existsByEmail(String email) {
         return alumnoRepository.existsByEmail(email);
-    }   
+    }
 
 }

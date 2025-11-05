@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title th:text="${aula.id != null} ? 'Editar Aula' : 'Nueva Aula'"></title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6"
+                th:text="${aula.id != null} ? 'Editar Aula' : 'Nueva Aula'"></h2>
+
+            <form th:action="@{/aulas/guardar}" th:object="${aula}" method="post"
+                class="bg-white shadow-lg rounded-lg p-6 space-y-6">
+
+                <input type="hidden" th:field="*{id}" />
+
+                <!-- Campo Nombre -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+                    <input type="text" th:field="*{nombre}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Ingrese el nombre">
+                    <p th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}" class="text-red-500 text-sm mt-1">
+                    </p>
+                </div>
+                <!-- Botones -->
+                <div class="flex justify-end space-x-4 pt-4">
+                    <a th:href="@{/aulas}"
+                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-200">
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
