@@ -40,12 +40,12 @@ public class AlumnoService {
         alumnoRepository.deleteById(id);
     }
 
-    public List<Alumno> findByNombre(String nombre) {
-        return alumnoRepository.findByNombreContainingIgnoreCase(nombre);
+    public List<Alumno> findByNombre(String cadena) {
+        return alumnoRepository.buscarPorNombreOApellidos(cadena);
     }
 
     public boolean existsByEmail(String email) {
-        return alumnoRepository.existsByEmail(email);
+        return alumnoRepository.existsByUsuarioEmail(email);
     }
 
 }

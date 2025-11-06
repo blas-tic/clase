@@ -1,26 +1,33 @@
 package es.trapasoft.clase.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import es.trapasoft.clase.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                         // PERMITE ACCESO PÚBLICO A LOGIN Y RECURSOS ESTÁTICOS
-                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                        .requestMatchers("/login", "/registro", "/css/**", "/js/**", "/images/**", "/webjars/**")
+                        .permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/alumnos/**").hasAnyRole("ADMIN", "ALUMNO")
                         .requestMatchers("/profesor/**").hasRole("PROFESOR")
@@ -29,36 +36,19 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true) // IMPORTANTE: evitar redirecciones
                         .permitAll())
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll());
+
         return http.build();
     }
 
-    // AGREGAR USUARIOS DE PRUEBA (TEMPORAL)
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails alumno = User.builder()
-                .username("alumno")
-                .password(passwordEncoder().encode("alumno"))
-                .roles("ALUMNO")
-                .build();
-
-        UserDetails profesor = User.builder()
-                .username("profesor")
-                .password(passwordEncoder().encode("profesor"))
-                .roles("PROFESOR")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, alumno, profesor);
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
